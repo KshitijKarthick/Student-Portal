@@ -8,18 +8,27 @@ class Student
 	property :dob, Date, :required => true
 	property :section, String, :required => true
 	property :semester, Integer, :required => true
+
 	belongs_to :course, 'Course',
 		:parent_key => [:id],
 		:child_key => [:course_id],
 		:required => true
-	has n,:absence, 'Absence',
-		:parent_key => [:student_reg_number],
-		:child_key => [:srn]
+
 	has n,:score,'Score',
-		:parent_key => [:student_reg_number],
+		:parent_key => [:srn],
 		:child_key => [:srn]
+
+	has n,:weeklyattendance,"WeeklyAttendance",
+		:parent_key => [:srn],
+		:child_key => [:srn]
+
 	belongs_to :department, 'Department',
-		:parent_key => [:id]
-		:child_key => [:department_id]
+		:parent_key => [:id],
+		:child_key => [:department_id],
 		:required => true
+
+	def full_name
+		return self[:first_name] + " " + self[:middle_name] + " " + self[:last_name]
+	end
+
 end

@@ -1,15 +1,18 @@
-class Weekly_Attendence
+class WeeklyAttendence
   include DataMapper::Resource
-  property :week_number, Integer, :required => true
+  property :week_number, Integer, :required => true, :key => true
   property :classes_held, Integer
   property :classes_attended, Integer
 
   belongs_to :student, 'Student',
     :parent_key => [:srn],
     :child_key => [:srn],
-    :required => true
-  belongs_to :lecture_series, 'Lecture_Series',
+    :required => true,
+    :key => true
+
+  belongs_to :lecture_series, 'LectureSeries',
     :parent_key => [:id],
     :child_key => [:lecture_series_id],
-    :required => true
+    :required => true,
+    :key => true
 end
