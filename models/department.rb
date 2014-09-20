@@ -11,8 +11,8 @@ class Department
 	has n,:subject, 'Subject',
 	:parent_key => [:id],
 	:child_key => [:department_id]
-	
+
 	has n,:lectureseries, 'LectureSeries',
 		:parent_key => [:id],
-		:child_key => [lecture_series_id]
+		:child_key => [:department_id]
 end

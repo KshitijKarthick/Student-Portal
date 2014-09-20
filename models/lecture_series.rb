@@ -2,6 +2,7 @@ class LectureSeries
 	include DataMapper::Resource
 	property :id, Serial
 	property :year, Date
+	property :section, String, :length => 5
 
 	belongs_to :course, 'Course',
 	:parent_key => [:id],
@@ -14,7 +15,7 @@ class LectureSeries
 
 	belongs_to :department, 'Department',
 	:parent_key => [:id],
-	:child_key => [:course_id],
+	:child_key => [:department_id],
 	:required => true
 
 	belongs_to :faculty, 'Faculty',

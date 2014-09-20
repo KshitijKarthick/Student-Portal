@@ -1,4 +1,4 @@
-class WeeklyAttendence
+class WeeklyAttendance
   include DataMapper::Resource
   property :week_number, Integer, :required => true, :key => true
   property :classes_held, Integer
@@ -10,7 +10,7 @@ class WeeklyAttendence
     :required => true,
     :key => true
 
-  belongs_to :lecture_series, 'LectureSeries',
+  belongs_to :lectureseries, 'LectureSeries',
     :parent_key => [:id],
     :child_key => [:lecture_series_id],
     :required => true,
