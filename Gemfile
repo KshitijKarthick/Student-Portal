@@ -3,8 +3,9 @@ gem 'sinatra'
 gem 'data_mapper'
 gem 'json'
 
-group :development do
-	gem 'dm-sqlite-adapter'
-end
+gem 'dm-postgres-adapter', :group => :production
+gem 'pg', :group => :production
+gem 'dm-sqlite-adapter', :group => :development
+gem 'sqlite3', :group => :development
 
 

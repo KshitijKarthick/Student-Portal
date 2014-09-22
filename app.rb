@@ -2,6 +2,9 @@ require 'bundler'
 Bundler.require
 require_relative './dm_config'
 
+
+
+
 not_found do
 	content_type :json
 	halt 404, { error: 'URL not found' }.to_json
@@ -38,6 +41,6 @@ get '/students/marks/:srn' do
 	if @s
 		@s.score.to_json
 	else
-		{error: "Invalid/Non-existent SRN"}.to_json
+		{error: "Invalid/Non-existant SRN"}.to_json
 	end
 end
