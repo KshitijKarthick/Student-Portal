@@ -16,11 +16,13 @@ class Student
 
 	has n,:score,'Score',
 		:parent_key => [:srn],
-		:child_key => [:srn]
+		:child_key => [:srn],
+		:constraint => :protect
 
 	has n,:weeklyattendance,"WeeklyAttendance",
 		:parent_key => [:srn],
-		:child_key => [:srn]
+		:child_key => [:srn],
+		:constraint => :protect
 
 	belongs_to :department, 'Department',
 		:parent_key => [:id],

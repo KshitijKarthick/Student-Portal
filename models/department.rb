@@ -5,8 +5,7 @@ class Department
 
 	has n,:student, 'Student',
 	:parent_key => [:id],
-	:child_key => [:department_id],
-	:required => true
+	:child_key => [:department_id]
 
 	has n,:subject, 'Subject',
 	:parent_key => [:id],
