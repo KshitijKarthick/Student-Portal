@@ -7,7 +7,7 @@ require_relative './dm_config'
 
 not_found do
 	content_type :json
-	halt 404, { error: 'URL not found' }.to_json
+	halt 404, { success: 0, error_message: 'URL not found' }.to_json
 end
 
 get '/' do
@@ -21,6 +21,7 @@ get '/students/:srn/info' do
 	@s = Student.get(params[:srn])
 	if @s
 		{   
+			success: 1,
 			srn: @s.srn, 
 			name: @s.full_name, 
 			dob: @s.dob, 
@@ -29,18 +30,22 @@ get '/students/:srn/info' do
 			department: @s.department.name,
 		}.to_json
 	else
-		{
-			error: "Invalid/Non-existent SRN"
+		{ 
+		 	success: 0,
+			error_message: "Invalid/Non-existent SRN"
 		}.to_json
 	end
 end
 
-get '/students/marks/:srn' do
+get '/students/:srn/marks/' do
 	content_type :json
 	@s = Student.get(params[:srn])
 	if @s
 		@s.score.to_json
 	else
-		{error: "Invalid/Non-existant SRN"}.to_json
+		{
+			success: 0,
+			error_message: "Invalid/Non-existant SRN"
+		}.to_json
 	end
 end
