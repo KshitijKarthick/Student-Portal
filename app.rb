@@ -16,7 +16,7 @@ get '/' do
 end
 
 
-get '/students/:srn' do
+get '/students/:srn/info' do
 	content_type :json
 	@s = Student.get(params[:srn])
 	if @s
