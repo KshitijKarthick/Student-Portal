@@ -4,7 +4,7 @@ class Faculty
   property :name, String, :required => true
   property :phone_number, String
 
-  has n,:lectureseries,'LectureSeries',
+  has n,:lectureserieses,'LectureSeries',
   	:parent_key => [:id],
   	:child_key => [:faculty_id]
 end

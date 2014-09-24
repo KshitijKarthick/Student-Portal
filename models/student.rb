@@ -14,12 +14,12 @@ class Student
 		:child_key => [:course_id],
 		:required => true
 
-	has n,:score,'Score',
+	has n,:scores,'Score',
 		:parent_key => [:srn],
 		:child_key => [:srn],
 		:constraint => :protect
 
-	has n,:weeklyattendance,"WeeklyAttendance",
+	has n,:weeklyattendances,"WeeklyAttendance",
 		:parent_key => [:srn],
 		:child_key => [:srn],
 		:constraint => :protect
@@ -29,8 +29,15 @@ class Student
 		:child_key => [:department_id],
 		:required => true
 
-	def full_name
-		return self[:first_name] + " " + self[:middle_name] + " " + self[:last_name]
+	def full_name 
+		fname = self[:first_name]
+		if self[:middle_name]
+			fname += " " + self[:middle_name] 
+		end
+		if self[:last_name]
+			fname+= " " + self[:last_name]
+		end
+		return fname
 	end
 
 end

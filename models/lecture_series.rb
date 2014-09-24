@@ -9,7 +9,7 @@ class LectureSeries
 	:child_key => [:course_id],
 	:required => true
 
-	has n, :exam, 'Exam',
+	has n, :exams, 'Exam',
 	:parent_key => [:id],
 	:child_key => [:lecture_series_id]
 
@@ -28,11 +28,11 @@ class LectureSeries
 	:child_key => [:subject_id],
 	:required => true
 	
-	has n,:enrollment, 'Enrollment',
+	has n,:enrollments, 'Enrollment',
 	:parent_key => [:id],
 	:child_key => [:lecture_series_id]
 
-	has n,:weeklyattendance, 'WeeklyAttendance',
+	has n,:weeklyattendances, 'WeeklyAttendance',
 	:parent_key => [:id],
 	:child_key => [:lecture_series_id]	
 end

@@ -15,7 +15,7 @@ class Subject
 		:child_key => [:department_id],
 		:required => true
 
-	has n,:lectureseries,'LectureSeries',
+	has n,:lectureserieses,'LectureSeries',
 		:parent_key => [:id],
 		:child_key => [:subject_id]
 end

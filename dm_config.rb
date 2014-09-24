@@ -1,3 +1,4 @@
+require 'dm-constraints'
 require_relative './models/course'
 require_relative './models/department'
 require_relative './models/lecture_series'
@@ -8,7 +9,7 @@ require_relative './models/score'
 require_relative './models/student'
 require_relative './models/subject'
 require_relative './models/weekly_attendance'
-require 'dm-constraints'
+
 
 
 
@@ -19,6 +20,11 @@ configure :development do
  configure :production do 
  	DataMapper.setup(:default, ENV['DATABASE_URL']) 
  end
- 
+
 DataMapper.finalize
 DataMapper.auto_upgrade!
+
+
+require_relative './seeds'
+
+ 

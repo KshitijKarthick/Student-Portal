@@ -11,7 +11,7 @@ class Exam
 		:child_key => [:lecture_series_id],
 		:required => true
 		
-	has n,:score, 'Score',
+	has n,:scores, 'Score',
 		:parent_key => [:id],
 		:child_key => [:exam_id]
 end

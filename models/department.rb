@@ -3,15 +3,15 @@ class Department
 	property :id, Serial
 	property :name, String, :required => true
 
-	has n,:student, 'Student',
+	has n,:students, 'Student',
 	:parent_key => [:id],
 	:child_key => [:department_id]
 
-	has n,:subject, 'Subject',
+	has n,:subjects, 'Subject',
 	:parent_key => [:id],
 	:child_key => [:department_id]
 
-	has n,:lectureseries, 'LectureSeries',
+	has n,:lectureserieses, 'LectureSeries',
 		:parent_key => [:id],
 		:child_key => [:department_id]
 end
