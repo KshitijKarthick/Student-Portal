@@ -37,15 +37,26 @@ get '/students/:srn/info' do
 	end
 end
 
-get '/students/:srn/marks/' do
+get '/students/:srn/marks' do
 	content_type :json
 	@s = Student.get(params[:srn])
 	if @s
-		@s.score.to_json
+		@s.scores.to_json
 	else
 		{
 			success: 0,
 			error_message: "Invalid/Non-existant SRN"
 		}.to_json
+	end
+end
+
+get '/students/login' do
+	content_type :json
+	@s = Student.get(params[:uname])
+	dob = @s.dob.day.to_s + @s.dob.month.to_s + @s.dob.year.to_s
+	if @s && dob = params[:pwd]
+		return {success: 1}
+	else
+		return {success: 0, error_message: "The SRN does not exist  or wrong password"}
 	end
 end
