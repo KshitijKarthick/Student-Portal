@@ -39,9 +39,9 @@ end
 
 get '/students/:srn/marks' do
 	content_type :json
-	@s = Student.get(params[:srn])
-	if @s
-		@s.scores.to_json
+	s = Student.get(params[:srn])
+	if s
+		s.scores.to_json
 	else
 		{
 			success: 0,
@@ -52,11 +52,11 @@ end
 
 get '/students/login' do
 	content_type :json
-	@s = Student.get(params[:uname])
-	dob = @s.dob.day.to_s + @s.dob.month.to_s + @s.dob.year.to_s
-	if @s && dob = params[:pwd]
-		return {success: 1}
+	s = Student.get(params[:uname].downcase)
+	 dob = s.dob.day.to_s.rjust(2,'0') + s.dob.month.to_s.rjust(2,'0') + s.dob.year.to_s
+	if dob == params[:pwd]
+		return {success: 1}.to_json
 	else
-		return {success: 0, error_message: "The SRN does not exist  or wrong password"}
+		return {success: 0, error_message: "The SRN does not exist  or wrong password"}.to_json
 	end
 end
