@@ -8,6 +8,7 @@ class Student
 	property :dob, Date, :required => true
 	property :section, String, :required => true
 	property :semester, Integer, :required => true
+	property :sex, String, :length => 1,:required => true
 
 	belongs_to :course, 'Course',
 		:parent_key => [:id],
