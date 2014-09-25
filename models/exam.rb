@@ -1,10 +1,11 @@
 class Exam
 	include DataMapper::Resource
 	property :id, Serial
-	property :date, Date
-	property :type, String
-	property :min_marks,Integer
-	property :max_marks,Integer
+	property :date, Date, :required => true
+	property :type, String, :required => true
+	property :min_marks,Integer, :required => true
+	property :max_marks,Integer, :required => true
+	property :name, String, :required => true
 
 	belongs_to :lectureseries, 'LectureSeries',
 		:parent_key => [:id],
