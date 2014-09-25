@@ -18,13 +18,14 @@ end
 
 get '/students/:srn/info' do
 	content_type :json
-	@s = Student.get(params[:srn])
+	@s = Student.get(params[:srn].downcase)
 	if @s
 		{   
 			success: 1,
 			srn: @s.srn, 
 			name: @s.full_name, 
 			dob: @s.dob, 
+			sex: @s.sex,
 			semester: @s.semester,
 			course: @s.course.name,
 			department: @s.department.name,
@@ -39,7 +40,7 @@ end
 
 get '/students/:srn/marks' do
 	content_type :json
-	s = Student.get(params[:srn])
+	s = Student.get(params[:srn].downcase)
 	if s
 		s.scores.to_json
 	else
@@ -53,7 +54,10 @@ end
 get '/students/login' do
 	content_type :json
 	s = Student.get(params[:uname].downcase)
-	 dob = s.dob.day.to_s.rjust(2,'0') + s.dob.month.to_s.rjust(2,'0') + s.dob.year.to_s
+	if s
+		dob = s.dob.day.to_s.rjust(2,'0') + s.dob.month.to_s.rjust(2,'0') + s.dob.year.to_s
+	end
+
 	if dob == params[:pwd]
 		return {success: 1}.to_json
 	else
