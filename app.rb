@@ -58,6 +58,38 @@ def student_attendance_current_sem(s)
 	return aggregated_attendance
 end
 
+def student_marks_current_sem(s)
+	marks = Array.new
+	p scores = Score.all(:student=>{:srn=>s.srn},:exam=>{:lectureseries=>{:subject=>{:semester=>s.semester}}})
+	scores = scores.group_by do |score|
+		score.exam.lectureseries.subject.name
+	end
+	scores.each do |subject_name,score_list|
+		subject_marks = Array.new
+		sum=0
+		score_list.each do |score|
+			sum+=score.marks_obtained.to_i
+			subject_marks.push({
+				exam_name: score.exam.name,
+				min_marks: score.exam.min_marks,
+				max_marks: score.exam.max_marks,
+				marks_obtained: score.marks_obtained
+				})
+		end
+
+
+		marks.push(
+		{
+			subject_name: subject_name,
+			average: sum.to_f/subject_marks.length,
+			scores: subject_marks			
+			})
+	end
+	return marks
+end
+
+
+
 get '/students/:srn/info' do
 	content_type :json
 	s = Student.get(params[:srn].downcase)
@@ -95,8 +127,21 @@ end
 
 get '/students/:srn/marks' do
 	content_type :json
-	h = JSON.parse('{"success":1,"hash":"46b6aa3d6e9909012dae43cda47cdc22","data":[{"subject_name":"Maths-4","average":21,"scores":[{"exam_name":"First Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":20},{"exam_name":"Second Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":22},{"exam_name":"Third Internal","exam_date":"26/09/2014","min_marks":15,"max_marks":25,"marks_obtained":18}]},{"subject_name":"DMS","average":23,"scores":[{"exam_name":"First Internal","exam_date":"23/09/2014","min_marks":15,"max_marks":25,"marks_obtained":21},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23}]}]}')
-	h.to_json
+	s = Student.get(params[:srn])
+	if s
+		marks = student_marks_current_sem(s)
+		hash = Digest::MD5.hexdigest(marks.to_s)
+		{
+			success: 1,
+			hash: hash,
+			data: marks
+		}.to_json
+	else
+		{
+			success: 0,
+			error_message: "Invalid/Non-existent SRN"
+		}.to_json
+	end
 end
 
 				
