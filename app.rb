@@ -1,8 +1,7 @@
 require 'bundler'
 Bundler.require
 require_relative './dm_config'
-
-
+require 'digest'
 
 
 not_found do
@@ -15,49 +14,119 @@ get '/' do
 	"hello".to_json
 end
 
+def student_info(s)
+	{   
+		success: 1,
+		srn: s.srn, 
+		name: s.full_name, 
+		dob: s.dob, 
+		sex: s.sex,
+		semester: s.semester,
+		course: s.course.name,
+		department: s.department.name
+	}
+end
+
+def student_attendance_current_sem(s)
+	aggregated_attendance = Array.new
+	attendance=WeeklyAttendance.all(:student =>{:srn=>s.srn},:lectureseries=>{:subject=>{:semester=>s.semester}})
+	
+	attendance = attendance.group_by do |weekly_attendance|
+		weekly_attendance.lecture_series_id
+	end
+
+	attendance.keys.each do |lecture_series_id|
+		classes_attended = 0
+		classes_held = 0
+		
+		attendance[lecture_series_id].each do |weekly_attendance|
+			classes_attended+=weekly_attendance.classes_attended
+			classes_held+=weekly_attendance.classes_held 
+		end
+		
+		subject_name = attendance[lecture_series_id][0].lectureseries.subject.name
+		percentage=(classes_attended.to_f/classes_held.to_f)*100
+		aggregated_attendance.push(
+				{
+				classes_held: classes_held,
+				classes_attended: classes_attended, 
+				percentage: percentage.round, 
+				subject_name: subject_name }
+			)
+	end
+
+	return aggregated_attendance
+end
 
 get '/students/:srn/info' do
 	content_type :json
-	@s = Student.get(params[:srn].downcase)
-	if @s
-		{   
-			success: 1,
-			srn: @s.srn, 
-			name: @s.full_name, 
-			dob: @s.dob, 
-			sex: @s.sex,
-			semester: @s.semester,
-			course: @s.course.name,
-			department: @s.department.name,
-		}.to_json
+	s = Student.get(params[:srn].downcase)
+	if s
+	si=student_info(s)
+	si["hash"]=	Digest::MD5.hexdigest(si.to_s)
+	si.to_json
 	else
 		{ 
-		 	success: 0,
+			success: 0,
 			error_message: "Invalid/Non-existent SRN"
 		}.to_json
 	end
 end
 
-get '/students/:srn/marks' do
+get '/students/:srn/hash' do
 	content_type :json
 	s = Student.get(params[:srn].downcase)
 	if s
-		s.scores.to_json
+		{   
+			success: 1,
+			info_hash: Digest::MD5.hexdigest(student_info(s).to_s),
+			marks_hash: Digest::MD5.hexdigest('{"success":1,"data":[{"subject_name":"Maths-4","average":21,"scores":[{"exam_name":"First Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":20},{"exam_name":"Second Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":22},{"exam_name":"Third Internal","exam_date":"26/09/2014","min_marks":15,"max_marks":25,"marks_obtained":18}]},{"subject_name":"DMS","average":23,"scores":[{"exam_name":"First Internal","exam_date":"23/09/2014","min_marks":15,"max_marks":25,"marks_obtained":21},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23}]}]}'),
+			attendance_hash: Digest::MD5.hexdigest(student_attendance_current_sem(s).to_s)
+		}.to_json
 	else
 		{
 			success: 0,
-			error_message: "Invalid/Non-existant SRN"
+			error_message: "Invalid/Non-existent SRN"
 		}.to_json
 	end
 end
 
+
+
+get '/students/:srn/marks' do
+	content_type :json
+	h = JSON.parse('{"success":1,"hash":"46b6aa3d6e9909012dae43cda47cdc22","data":[{"subject_name":"Maths-4","average":21,"scores":[{"exam_name":"First Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":20},{"exam_name":"Second Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":22},{"exam_name":"Third Internal","exam_date":"26/09/2014","min_marks":15,"max_marks":25,"marks_obtained":18}]},{"subject_name":"DMS","average":23,"scores":[{"exam_name":"First Internal","exam_date":"23/09/2014","min_marks":15,"max_marks":25,"marks_obtained":21},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23}]}]}')
+	h.to_json
+end
+
+				
+
+get '/students/:srn/attendance' do
+	content_type :json
+	s = Student.get(params[:srn])
+	if s
+		aggregated_attendance = student_attendance_current_sem()
+		hash = Digest::MD5.hexdigest(aggregated_attendance.to_s)
+		{
+			success: 1,
+			hash: hash,
+			data: aggregated_attendance
+		}.to_json
+	else
+		{
+			success: 0,
+			error_message: "Invalid/Non-existent SRN"
+		}.to_json
+	end
+end
+
+				
 get '/students/login' do
 	content_type :json
 	s = Student.get(params[:uname].downcase)
 	if s
 		dob = s.dob.day.to_s.rjust(2,'0') + s.dob.month.to_s.rjust(2,'0') + s.dob.year.to_s
 	end
-
 	if dob == params[:pwd]
 		return {success: 1}.to_json
 	else
