@@ -35,11 +35,11 @@ def student_attendance_current_sem(s)
 		weekly_attendance.lecture_series_id
 	end
 
-	attendance.keys.each do |lecture_series_id|
+	attendance.each do |lecture_series_id,attendance_list|
 		classes_attended = 0
 		classes_held = 0
 		
-		attendance[lecture_series_id].each do |weekly_attendance|
+		attendance_list.each do |weekly_attendance|
 			classes_attended+=weekly_attendance.classes_attended
 			classes_held+=weekly_attendance.classes_held 
 		end
