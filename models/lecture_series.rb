@@ -1,7 +1,7 @@
 class LectureSeries
 	include DataMapper::Resource
 	property :id, Serial
-	property :year, Date
+	property :year, Integer
 	property :section, String, :length => 5
 
 	belongs_to :course, 'Course',
