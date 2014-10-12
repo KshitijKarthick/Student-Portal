@@ -1,7 +1,7 @@
 class Score
 	include DataMapper::Resource
 	property :marks_obtained, String
-	
+
 	belongs_to :student, 'Student',
 		:parent_key => [:srn],
 		:child_key => [:srn],

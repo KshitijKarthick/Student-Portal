@@ -112,7 +112,7 @@ get '/students/:srn/hash' do
 		{   
 			success: 1,
 			info_hash: Digest::MD5.hexdigest(student_info(s).to_s),
-			marks_hash: Digest::MD5.hexdigest('{"success":1,"data":[{"subject_name":"Maths-4","average":21,"scores":[{"exam_name":"First Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":20},{"exam_name":"Second Internal","exam_date":"22/09/2014","min_marks":15,"max_marks":25,"marks_obtained":22},{"exam_name":"Third Internal","exam_date":"26/09/2014","min_marks":15,"max_marks":25,"marks_obtained":18}]},{"subject_name":"DMS","average":23,"scores":[{"exam_name":"First Internal","exam_date":"23/09/2014","min_marks":15,"max_marks":25,"marks_obtained":21},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23},{"exam_name":"Second Internal","exam_date":"24/09/2014","min_marks":15,"max_marks":25,"marks_obtained":23}]}]}'),
+			marks_hash: Digest::MD5.hexdigest(student_marks_current_sem(s).to_s),
 			attendance_hash: Digest::MD5.hexdigest(student_attendance_current_sem(s).to_s)
 		}.to_json
 	else
@@ -150,7 +150,7 @@ get '/students/:srn/attendance' do
 	content_type :json
 	s = Student.get(params[:srn])
 	if s
-		aggregated_attendance = student_attendance_current_sem()
+		aggregated_attendance = student_attendance_current_sem(s)
 		hash = Digest::MD5.hexdigest(aggregated_attendance.to_s)
 		{
 			success: 1,

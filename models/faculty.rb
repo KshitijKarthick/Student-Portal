@@ -1,7 +1,7 @@
 class Faculty
   include DataMapper::Resource
-  property :id, Serial
-  property :name, String, :required => true
+  property :id, Serial,:message => 'Primary Key should be Unique'
+  property :name, String, :required => true,:message => 'Faculty Name is a Mandatory Field'
   property :phone_number, String
 
   has n,:lectureserieses,'LectureSeries',

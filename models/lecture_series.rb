@@ -1,8 +1,9 @@
 class LectureSeries
 	include DataMapper::Resource
-	property :id, Serial
-	property :year, Integer
-	property :section, String, :length => 5
+	property :id, Serial,:message => 'Primary Key should be Unique'
+	property :year, String
+	property :section, String, :length => 5,:message =>'Section data should not have greater length than 5'
+	property :semester, Integer
 
 	belongs_to :course, 'Course',
 	:parent_key => [:id],
@@ -27,12 +28,12 @@ class LectureSeries
 	:parent_key => [:id],
 	:child_key => [:subject_id],
 	:required => true
-	
+
 	has n,:enrollments, 'Enrollment',
 	:parent_key => [:id],
 	:child_key => [:lecture_series_id]
 
 	has n,:weeklyattendances, 'WeeklyAttendance',
 	:parent_key => [:id],
-	:child_key => [:lecture_series_id]	
+	:child_key => [:lecture_series_id]
 end
